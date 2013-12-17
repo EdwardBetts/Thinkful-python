@@ -14,9 +14,12 @@ print "${0:.2f}".format(tip_value)
 print "${0:.2f}".format(total)
 
 '''
-meal = float(raw_input("meal cost before tax"))
-tax = float(raw_input("tax rate"))
-tip = float(raw_input("tip rate"))
+
+import sys
+
+meal = float(sys.argv[1])
+tip = float(sys.argv[2])
+tax = float(sys.argv[3])
 
 tax_value = tax * meal
 meal_with_tax = meal + tax_value
