@@ -1,7 +1,11 @@
 import re
+import sys
+import os
 from pg_sample_texts import DIV_COMM, MAG_CART
 
 documents = [DIV_COMM, MAG_CART]
+
+directory = sys.argv[1]
 
 # PREPARE OUR REGEXES FOR METADATA SEARCHES #
 # we'll use re.compile() here, which allows you to assign a regex pattern
@@ -30,22 +34,51 @@ illustrator_search = re.compile(r'(illustrator:)(?P<illustrator>.*)', re.IGNOREC
 # your currently on in your loop. You should memorize how enumerate works, and google it
 # if you need more explanation. It's a highly productive built in function, and there are
 # common problems that you'll encounter as a programmer that enumerate is great for.
-for i, doc in enumerate(documents):
-  title = re.search(title_search, doc).group('title')
-  author = re.search(author_search, doc)
-  translator = re.search(translator_search, doc)
-  illustrator = re.search(illustrator_search, doc)
-  if author: 
-    author = author.group('author')
-  if translator:
-    translator = translator.group('translator')
-  if illustrator:
-    illustrator = illustrator.group('illustrator')
-  print "***" * 25
-  print "Here's the info for doc {}:".format(i)
-  print "Title:  {}".format(title)
-  print "Author(s): {}".format(author)
-  print "Translator(s): {}".format(translator)
-  print "Illustrator(s): {}".format(illustrator)
-  print "\n"
 
+
+
+# first we need to do something with the user supplied keywords
+# which we're getting with sys.argv. Remember, the script name itself
+# is at index 0 in sys.argv, so we'll slice everything from index 1 forward.
+
+searches = {}
+for kw in sys.argv[2:]:
+  searches[kw] = re.compile(r'\b' + kw + r'\b', re.IGNORECASE)
+
+
+for fl in (os.listdir(directory)):
+    if fl.endswith('.txt'):
+      fl_path = os.path.join(directory,fl)
+      with open(fl_path, "r") as f:
+          full_text = f.read()
+      title = re.search(title_search, full_text).group('title')
+      author = re.search(author_search, full_text)
+      translator = re.search(translator_search, full_text)
+      illustrator = re.search(illustrator_search, full_text)
+      if author: 
+        author = author.group('author')
+      if translator:
+        translator = translator.group('translator')
+      if illustrator:
+        illustrator = illustrator.group('illustrator')
+      print "***" * 25
+      print "Here's the info for doc {}:".format(fl)
+      print "Title:  {}".format(title)
+      print "Author(s): {}".format(author)
+      print "Translator(s): {}".format(translator)
+      print "Illustrator(s): {}".format(illustrator)
+      print "\n"
+      print "***" * 25
+      print "Here's the keyword info for doc {}:".format(fl)
+      for search in searches:
+        print "\"{0}\": {1}".format(search, len(re.findall(searches[search], full_text)))
+
+
+        '''
+
+import os
+dirs = os.listdir(".")
+for dir in dirs:
+    new_dirs = os.listdir(os.path.join(".", dir))
+    "." + "/" + dir
+    '''

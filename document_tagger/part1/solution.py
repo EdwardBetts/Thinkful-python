@@ -1,4 +1,5 @@
 import re
+import sys
 from pg_sample_texts import DIV_COMM, MAG_CART
 
 documents = [DIV_COMM, MAG_CART]
@@ -30,6 +31,18 @@ illustrator_search = re.compile(r'(illustrator:)(?P<illustrator>.*)', re.IGNOREC
 # your currently on in your loop. You should memorize how enumerate works, and google it
 # if you need more explanation. It's a highly productive built in function, and there are
 # common problems that you'll encounter as a programmer that enumerate is great for.
+
+
+
+# first we need to do something with the user supplied keywords
+# which we're getting with sys.argv. Remember, the script name itself
+# is at index 0 in sys.argv, so we'll slice everything from index 1 forward.
+
+searches = {}
+for kw in sys.argv[1:]:
+  searches[kw] = re.compile(r'\b' + kw + r'\b', re.IGNORECASE)
+
+
 for i, doc in enumerate(documents):
   title = re.search(title_search, doc).group('title')
   author = re.search(author_search, doc)
@@ -48,4 +61,7 @@ for i, doc in enumerate(documents):
   print "Translator(s): {}".format(translator)
   print "Illustrator(s): {}".format(illustrator)
   print "\n"
-
+  print "***" * 25
+  print "Here's the keyword info for doc {}:".format(i)
+  for search in searches:
+    print "\"{0}\": {1}".format(search, len(re.findall(searches[search], doc)))
