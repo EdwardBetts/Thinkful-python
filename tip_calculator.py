@@ -43,7 +43,7 @@ print "${0:.2f}".format(tax_value)
 print "${0:.2f}".format(tip_value)
 print "${0:.2f}".format(total)
 
-print "Tipping at a rate of {0}%, you should leave ${1:.2f} for a tip.".format(int(100*tip), tip_value)
+print "Tipping at a rate of {0:.0%}, you should leave ${1:.2f} for a tip.".format(tip, tip_value)
 '''
 
 from optparse import OptionParser
@@ -68,6 +68,6 @@ total = meal_with_tax + tip_value
  
 print "The base cost of your meal was ${0:.2f}.".format(options.meal)
 print "You need to pay ${0:.2f} for tax.".format(tax_value)
-print "Tipping at a rate of {0}%, you should leave ${1:.2f} for a tip.".format(
-                                        int(100*options.tax_percent), tax_value)
+print "Tipping at a rate of {0:.0%}, you should leave ${1:.2f} for a tip.".format(
+                                        options.tax_percent, tax_value)
 print "The grand total of your meal is ${0:.2f}.".format(total)
